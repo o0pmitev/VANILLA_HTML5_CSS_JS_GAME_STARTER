@@ -9,11 +9,17 @@ export class RenderSystem {
 		this.grid = new Grid(this._ctx);
 	}
 
-	render() {
+	render(player) {
 		// Clears the screen on each frame update
 		this._ctx.fillStyle = config.screen.bgColor;
 		this._ctx.fillRect(0, 0, config.screen.width, config.screen.height);
 
 		this.grid.render();
+		this.renderPlayer(player);
+	}
+
+	renderPlayer(player) {
+		this._ctx.fillStyle = player.color;
+		this._ctx.fillRect(player.x, player.y, player.width, player.height);
 	}
 }

@@ -1,4 +1,5 @@
 import config from "./config/index.js";
+import { Player } from "./entities/Player.js";
 import { RenderSystem } from "./systems/RenderSystem.js";
 
 export class Game {
@@ -6,6 +7,14 @@ export class Game {
 		this.canvas = document.getElementById("gameCanvas");
 		this.ctx = this.canvas.getContext("2d");
 		this.renderSystem = new RenderSystem(this.canvas);
+
+		this.player = new Player(
+			config.screen.width / 2 - config.player.width / 2,
+			config.screen.height/ 2 - config.player.height / 2,
+			config.player.width,
+			config.player.height,
+			config.player.color);
+
 		this._init();
 	}
 
@@ -47,7 +56,7 @@ export class Game {
 
 	_gameLoop(t) {
 		// console.log('Seconds: ' + Math.ceil(t / 1000));
-		this.renderSystem.render();
+		this.renderSystem.render(this.player);
 		requestAnimationFrame((t) => this._gameLoop(t));
 	}
 
