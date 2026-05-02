@@ -1,9 +1,11 @@
 import config from "./config/index.js";
+import { RenderSystem } from "./systems/RenderSystem.js";
 
 export class Game {
 	constructor() {
 		this.canvas = document.getElementById("gameCanvas");
 		this.ctx = this.canvas.getContext("2d");
+		this.renderSystem = new RenderSystem(this.canvas);
 		this._init();
 	}
 
@@ -45,13 +47,8 @@ export class Game {
 
 	_gameLoop(t) {
 		// console.log('Seconds: ' + Math.ceil(t / 1000));
-		this._render();
+		this.renderSystem.render();
 		requestAnimationFrame((t) => this._gameLoop(t));
 	}
 
-	_render() {
-		// Clears the screen on each frame update
-		this.ctx.fillStyle = config.screen.bgColor;
-		this.ctx.fillRect(0, 0, config.screen.width, config.screen.height);
-	}
 }
