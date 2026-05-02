@@ -1,0 +1,39 @@
+:root{
+	/* COLORS */
+	--main-bg-color: #1a1a2a;
+	--main-border-color: #2e2e3e;
+
+	--main-font-color: #eee;
+
+	/* FONTS */
+	--main-font: 'Courier New'
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: var(--main-bg-color);
+	overflow: hidden;
+	font-family: var(--main-font), monospace;
+	color: var(--main-font-color);
+}
+
+
+#gameContainer { 
+	display: flex;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+#gameCanvas {
+	border: 4px solid var(--main-border-color);
+	image-rendering: pixelated; /* prevent browser from blurring our graphics == point filtering (for pixel art)*/
+	image-rendering: crisp-edges; /* prevent browser from blurring our graphics == point filtering (for pixel art) diff browsers apply the filter differently*/
+	background: var(--main-bg-color);
+}
