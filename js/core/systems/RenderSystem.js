@@ -1,7 +1,8 @@
 import config from "../config/index.js";
 import { Grid } from "../components/Grid.js";
 export class RenderSystem {
-	constructor(canvas) {
+	constructor(canvas, imageManager) {
+		this.imageManager = imageManager;
 		this._canvas = canvas;
 		this._ctx = canvas.getContext('2d');
 		this._ctx.imageSmoothingEnabled = false; // Prevent the browser from blurring the graphics good for pixel art
@@ -19,7 +20,12 @@ export class RenderSystem {
 	}
 
 	renderPlayer(player) {
-		this._ctx.fillStyle = player.color;
-		this._ctx.fillRect(player.x, player.y, player.width, player.height);
+		const playerImage = this.imageManager.get('player');
+		if (playerImage) {
+			this._ctx.drawImage(playerImage, player.x, player.y, playerImage.width, playerImage.height);
+		} else {
+			this._ctx.fillStyle = player.color;
+			this._ctx.fillRect(player.x, player.y, player.width, player.height);
+		}
 	}
 }

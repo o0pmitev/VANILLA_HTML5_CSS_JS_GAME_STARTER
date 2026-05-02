@@ -1,19 +1,29 @@
 import config from "./config/index.js";
 import { Player } from "./entities/Player.js";
 import { RenderSystem } from "./systems/RenderSystem.js";
+import { ImageManager } from "../managers/ImageManager.js";
 
 export class Game {
 	constructor() {
 		this.canvas = document.getElementById("gameCanvas");
 		this.ctx = this.canvas.getContext("2d");
-		this.renderSystem = new RenderSystem(this.canvas);
+
+		this.imageManager = new ImageManager();
+		this.imageManager.loadAll();
+
+		this.renderSystem = new RenderSystem(this.canvas, this.imageManager);
+
+		this.keys = {};
+
+		this.lastTime;
 
 		this.player = new Player(
 			config.screen.width / 2 - config.player.width / 2,
 			config.screen.height/ 2 - config.player.height / 2,
 			config.player.width,
 			config.player.height,
-			config.player.color
+			config.player.color,
+			config.player.movement.speed,
 		);
 
 		this._init();
@@ -21,10 +31,38 @@ export class Game {
 
 	_init() {
 		this._resizeCanvas();
-		window.addEventListener('resize', this._resizeCanvas.bind(this));
-		// window.addEventListener('resize', () => this._resizeCanvas()); //
+		this._setupInput();
+		this.timestamp = performance.now();
 
+		window.addEventListener('resize', this._resizeCanvas.bind(this));
+
+		// window.addEventListener('resize', () => this._resizeCanvas()); //
 		requestAnimationFrame((t) => this._gameLoop(t));
+	}
+
+	update(dt) {
+		this.player.update(this.keys, dt);
+	}
+
+	_setupInput() {
+		window.addEventListener('keydown', (e) => {
+			this.keys[e.key.toLowerCase()] = true;
+			console.log(this.keys)
+		});
+
+		window.addEventListener('keyup', (e) => {
+			this.keys[e.key.toLowerCase()] = false;
+		});
+
+		//🐛 prevent from player movement stuck on context menu open
+		window.addEventListener('contextmenu', () => {
+			this.keys = {};
+		});
+
+		//🐛 prevent from player movement stuck on tab switch
+		window.addEventListener('blur', () => {
+			this.keys = {};
+		});
 	}
 
 	_resizeCanvas() {
@@ -55,10 +93,12 @@ export class Game {
 
 	}
 
-	_gameLoop(t) {
-		// console.log('Seconds: ' + Math.ceil(t / 1000));
+	_gameLoop(timestamp) {
+		const dt = Math.min((timestamp - this.lastTime) / 1000, 0.1);
+		this.lastTime = timestamp;
+		this.update(dt);
 		this.renderSystem.render(
-			this.player
+			this.player,
 		);
 
 		requestAnimationFrame((t) => this._gameLoop(t));
