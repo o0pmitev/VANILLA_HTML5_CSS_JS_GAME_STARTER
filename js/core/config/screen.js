@@ -3,4 +3,5 @@ export default {
 	height: 720,
 	ratio:16/9, // [GAME_WIDTH / GAME_HEIGHT] must follow the ration
 	margin: 5,
+	bgColor: "#0f3460",
 }
