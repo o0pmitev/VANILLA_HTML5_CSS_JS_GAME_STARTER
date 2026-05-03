@@ -11,17 +11,15 @@ export class Grid {
 
 		this._ctx.strokeStyle = color;
 		this._ctx.lineWidth = lineWidth;
+		this._ctx.beginPath();
 		for (let i = 0; i < width; i += gridSize) {
-			this._ctx.beginPath();
 			this._ctx.moveTo(i, 0);
 			this._ctx.lineTo(i, height);
-			this._ctx.stroke()
 		}
 		for (let i = 0; i < height; i += gridSize) {
-			this._ctx.beginPath();
 			this._ctx.moveTo(0, i);
 			this._ctx.lineTo(width,i);
-			this._ctx.stroke()
 		}
+		this._ctx.stroke()
 	}
 }

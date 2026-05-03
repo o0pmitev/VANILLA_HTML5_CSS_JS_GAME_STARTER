@@ -15,7 +15,7 @@ export class Game {
 
 		this.keys = {};
 
-		this.lastTime;
+		this.lastTime = 0;
 
 		this.player = new Player(
 			config.screen.width / 2 - config.player.width / 2,
