@@ -5,6 +5,16 @@
 
 	--main-font-color: #eee;
 
+	--ui-background: rgba(0, 0, 0, 0.9);
+	--ui-backdrop-filter: blur(10px);
+	--ui-accent-color: #4a9eff;
+	--ui-box-shadow: 0 0 30px rgba(74, 158, 255, 0.3);
+	--ui-text-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+	--ui-button-background: #3a7ed8;
+	--ui-button-border-color: #4a9eff;
+	--ui-button-background-hover: #4a9eff;
+	--ui-button-box-shadow: 0 0 15px rgba(74, 158, 255, 0.2);
+	--ui-button-box-shadow-hover: 0 0 15px rgba(74, 158, 255, 0.5);
 	/* FONTS */
 	--main-font: 'Courier New'
 }
@@ -36,4 +46,54 @@ body {
 	image-rendering: pixelated; /* prevent browser from blurring our graphics == point filtering (for pixel art)*/
 	image-rendering: crisp-edges; /* prevent browser from blurring our graphics == point filtering (for pixel art) diff browsers apply the filter differently*/
 	background: var(--main-bg-color);
+}
+
+/* Main Menu */
+#loadingScreen {
+	padding: 70px;
+}
+
+.ui-panel {
+	list-style: none;
+	position: absolute;
+	background: var(--ui-background);
+	backdrop-filter: var(--ui-backdrop-filter);
+	border: 3px solid var(--ui-accent-color);
+	padding: 30px;
+	border-radius: 30px;
+	text-align: center;
+	box-shadow: var(--ui-box-shadow);
+	z-index: 1000;
+	display: none;
+}
+
+.ui-panel.active {
+	display: block;
+}
+
+.ui-panel h1 {
+	color: var(--ui-accent-color);
+	font-size: 40px;
+	text-shadow: var(--ui-text-shadow);
+
+}
+
+button {
+	background: var(--ui-button-background);
+	color: white;
+	border: 2px solid var(--ui-button-border-color);
+	padding: 12px 24px;
+	margin: 8px;
+	font-size: 16px;
+	cursor: pointer;
+	font-family: var(--main-font), monospace;
+	border-radius: 8px;
+	transition: all 0.3s;
+	box-shadow: var(--ui-button-box-shadow);
+}
+
+button:hover {
+	background: var(--ui-button-background-hover);
+	transform: translateY(-2px);
+	box-shadow: var(--ui-button-box-shadow-hover);
 }

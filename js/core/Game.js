@@ -3,19 +3,37 @@ import { Player } from "./entities/Player.js";
 import { RenderSystem } from "./systems/RenderSystem.js";
 import { ImageManager } from "../managers/ImageManager.js";
 
+const STATES = {
+	MENU: 'menu',
+	PLAY: 'play',
+	PAUSED: 'paused',
+}
+
+const BUTTONS = {
+	PLAY: 'playBtn',
+	RESUME: 'resumeBtn',
+	QUIT: 'quitBtn',
+}
+
+const MENU_SCREENS = {
+	LOADING: 'loadingScreen',
+	MAIN: 'mainMenu',
+	PAUSE: 'pauseMenu',
+}
 export class Game {
 	constructor() {
 		this.canvas = document.getElementById("gameCanvas");
 		this.ctx = this.canvas.getContext("2d");
 
 		this.imageManager = new ImageManager();
-		this.imageManager.loadAll();
 
 		this.renderSystem = new RenderSystem(this.canvas, this.imageManager);
 
 		this.keys = {};
 
 		this.lastTime = 0;
+
+		this.state = STATES.MENU;
 
 		this.player = new Player(
 			config.screen.width / 2 - config.player.width / 2,
@@ -29,9 +47,17 @@ export class Game {
 		this._init();
 	}
 
-	_init() {
+	async _init() {
+		await Promise.all([
+			this.imageManager.loadAll(),
+		]);
+
+		document.getElementById(MENU_SCREENS.LOADING).classList.remove('active');
+		document.getElementById(MENU_SCREENS.MAIN).classList.add('active');
+
 		this._resizeCanvas();
 		this._setupInput();
+		this._setupUI();
 		this.timestamp = performance.now();
 
 		window.addEventListener('resize', this._resizeCanvas.bind(this));
@@ -40,14 +66,74 @@ export class Game {
 		requestAnimationFrame((t) => this._gameLoop(t));
 	}
 
-	update(dt) {
+	_update(dt) {
+		if (this.state !== STATES.PLAY) return;
 		this.player.update(this.keys, dt);
+	}
+
+	_render() {
+		if (this.state === STATES.MENU) {
+			this.ctx.fillStyle = config.screen.bgColor;
+			this.ctx.fillRect(0, 0, config.screen.width, config.screen.height);
+		} else {
+			this.renderSystem.render(
+				this.player,
+			);
+		}
+	}
+
+	_setupUI() {
+		document.getElementById(BUTTONS.PLAY).onclick = () => this._startGame();
+		document.getElementById(BUTTONS.RESUME).onclick = () => this._resume();
+		document.getElementById(BUTTONS.QUIT).onclick = () => this._quitToMenu();
+
+	}
+
+	_pause() {
+		this.state = STATES.PAUSED;
+		document.getElementById(MENU_SCREENS.PAUSE).classList.add('active');
+	}
+
+
+	_resume() {
+		this.state = STATES.PLAY;
+		document.getElementById(MENU_SCREENS.PAUSE).classList.remove('active');
+	}
+
+
+	_quitToMenu() {
+		this._returnToMenu();
+	}
+
+
+	_returnToMenu() {
+		this.state = STATES.MENU;
+		this._hideAllPanels();
+		document.getElementById(MENU_SCREENS.MAIN).classList.add('active');
+	}
+
+	_hideAllPanels() {
+		document.querySelectorAll(".ui-panel").forEach(p => p.classList.remove("active"));
+	}
+
+	_startGame() {
+		this._reset();
+		this.state = STATES.PLAY;
+		this._hideAllPanels();
 	}
 
 	_setupInput() {
 		window.addEventListener('keydown', (e) => {
+
+			if (e.key === 'Escape') {
+				if (this.state === STATES.PLAY) {
+					this._pause();
+				} else if (this.state === STATES.PAUSED) {
+					this._resume();
+				}
+			}
+
 			this.keys[e.key.toLowerCase()] = true;
-			console.log(this.keys)
 		});
 
 		window.addEventListener('keyup', (e) => {
@@ -94,14 +180,19 @@ export class Game {
 	}
 
 	_gameLoop(timestamp) {
+		if (this.lastTime === 0) {
+			this.lastTime = timestamp;
+		}
+
 		const dt = Math.min((timestamp - this.lastTime) / 1000, 0.1);
 		this.lastTime = timestamp;
-		this.update(dt);
-		this.renderSystem.render(
-			this.player,
-		);
-
+		this._update(dt);
+		this._render();
 		requestAnimationFrame((t) => this._gameLoop(t));
 	}
 
+	_reset() {
+		this.player.reset();
+		this.lastTime = performance.now();
+	}
 }

@@ -1,10 +1,10 @@
 import config from "../config/index.js";
 export class Player {
 	constructor(x, y, width, height, color, speed) {
-		this.x = x;
-		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.x = x;
+		this.y = y;
 		this.color = color;
 		this.speed = speed;
 	}
@@ -32,5 +32,10 @@ export class Player {
 		this.x = Math.max(this.x, 0);
 		this.y = Math.min(this.y, config.screen.height - this.height);
 		this.y = Math.max(this.y, 0);
+	}
+
+	reset() {
+		this.x = config.screen.width / 2 - this.width / 2;
+		this.y = config.screen.height / 2 - this.height / 2;
 	}
 }

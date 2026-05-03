@@ -9,8 +9,28 @@
 <body>
 	<section id="gameContainer">
 		<canvas id="gameCanvas"></canvas>
+		<menu id="mainMenu" class="ui-panel">
+			<h1>Placeholder Title</h1>
+			<li>
+				<button id="playBtn">PLAY</button>
+			</li>
+			<li>
+				<p>WASD - Move</p>
+				<p>ESC - Pause</p>
+			</li>
+		</menu>
 
-		<script type="module" src="./js/main.js"></script>
+		<menu id="pauseMenu" class="ui-panel">
+			<h2>PAUSED</h2>
+			<li>
+				<button id="resumeBtn">RESUME</button>
+				<button id="quitBtn">QUIT TO MENU</button>
+			</li>
+		</menu>
+		<menu id="loadingScreen" class="ui-panel active">
+			<h2>LOADING . . .</h2>
+		</menu>
 	</section>
+	<script type="module" src="./js/main.js"></script>
 </body>
 </html>
